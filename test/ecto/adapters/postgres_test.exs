@@ -965,6 +965,16 @@ defmodule Ecto.Adapters.PostgresTest do
     """ |> remove_newlines]
   end
 
+  test "create table with bit varying column" do
+    create = {:create, table(:bits),
+              [{:add, :bits, :"bit varying(3)", []}]}
+
+    assert execute_ddl(create) == ["""
+    CREATE TABLE "bits" ("bits" bit varying(3))
+    """ |> remove_newlines]
+
+  end
+
   test "create table with a map column, and an empty map default" do
     create = {:create, table(:posts),
               [

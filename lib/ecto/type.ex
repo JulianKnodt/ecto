@@ -89,14 +89,14 @@ defmodule Ecto.Type do
   @type custom    :: module
 
   @typep base      :: :integer | :float | :boolean | :string | :map |
-                      :binary | :decimal | :id | :binary_id |
+                      :binary | :decimal | :id | :binary_id | :bit |
                       :utc_datetime | :naive_datetime | :date | :time | :any |
                       :utc_datetime_usec | :naive_datetime_usec | :time_usec
   @typep composite :: {:array, t} | {:map, t} | {:embed, Ecto.Embedded.t} | {:in, t}
 
   @base ~w(
     integer float boolean string map
-    binary decimal id binary_id
+    binary decimal id binary_id bit
     utc_datetime naive_datetime date time any
     utc_datetime_usec naive_datetime_usec time_usec
   )a
@@ -884,6 +884,7 @@ defmodule Ecto.Type do
   defp of_base_type?(:integer, term),  do: is_integer(term)
   defp of_base_type?(:boolean, term),  do: is_boolean(term)
   defp of_base_type?(:binary, term),   do: is_binary(term)
+  defp of_base_type?(:bit, term),      do: is_bitstring(term)
   defp of_base_type?(:string, term),   do: is_binary(term)
   defp of_base_type?(:map, term),      do: is_map(term) and not Map.has_key?(term, :__struct__)
   defp of_base_type?(:decimal, value), do: Kernel.match?(%Decimal{}, value)

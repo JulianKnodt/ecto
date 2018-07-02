@@ -542,6 +542,11 @@ if Code.ensure_loaded?(Postgrex) do
       ["'\\x", Base.encode16(binary, case: :lower) | "'::bytea"]
     end
 
+    defp expr(%Ecto.Query.Tagged{value: bitstring, type: :bit}, _sources, _query)
+      when is_bitstring(bitstring) do
+      "B'#{Enum.join((for <<bit::1 <- bitstring>>, do: bit), "")}'"
+    end
+
     defp expr(%Ecto.Query.Tagged{value: other, type: type}, sources, query) do
       [expr(other, sources, query), ?:, ?: | tagged_to_db(type)]
     end
@@ -899,6 +904,7 @@ if Code.ensure_loaded?(Postgrex) do
         size            -> [type_name, ?(, to_string(size), ?)]
         precision       -> [type_name, ?(, to_string(precision), ?,, to_string(scale || 0), ?)]
         type == :string -> [type_name, "(255)"]
+        type == :bit    -> [type_name, "(255)"]
         true            -> type_name
       end
     end
@@ -1004,6 +1010,7 @@ if Code.ensure_loaded?(Postgrex) do
     defp ecto_to_db(:binary_id),           do: "uuid"
     defp ecto_to_db(:string),              do: "varchar"
     defp ecto_to_db(:binary),              do: "bytea"
+    defp ecto_to_db(:bit),                 do: "bit varying"
     defp ecto_to_db(:map),                 do: Application.fetch_env!(:ecto, :postgres_map_type)
     defp ecto_to_db({:map, _}),            do: Application.fetch_env!(:ecto, :postgres_map_type)
     defp ecto_to_db(:time_usec),           do: "time"

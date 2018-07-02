@@ -29,6 +29,7 @@ defmodule Ecto.Integration.Post do
     field :counter, :id # Same as integer
     field :title, :string
     field :text, :binary
+    field :flags, :bit
     field :temp, :string, default: "temp", virtual: true
     field :public, :boolean, default: true
     field :cost, :decimal

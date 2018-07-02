@@ -752,6 +752,7 @@ if Code.ensure_loaded?(Mariaex) do
         size            -> [type_name, ?(, to_string(size), ?)]
         precision       -> [type_name, ?(, to_string(precision), ?,, to_string(scale || 0), ?)]
         type == :string -> [type_name, "(255)"]
+        type == :bit    -> [type_name, "(255)"]
         true            -> type_name
       end
     end
@@ -853,6 +854,7 @@ if Code.ensure_loaded?(Mariaex) do
     defp ecto_to_db(:string, _query),              do: "varchar"
     defp ecto_to_db(:float, _query),               do: "double"
     defp ecto_to_db(:binary, _query),              do: "blob"
+    defp ecto_to_db(:bit, _query),                 do: "bit"
     defp ecto_to_db(:uuid, _query),                do: "binary(16)" # MySQL does not support uuid
     defp ecto_to_db(:map, _query),                 do: "text"
     defp ecto_to_db({:map, _}, _query),            do: "text"

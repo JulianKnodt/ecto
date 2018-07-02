@@ -13,8 +13,9 @@ defmodule Ecto.Integration.TypeTest do
     text     = <<0, 1>>
     uuid     = "00010203-0405-4607-8809-0a0b0c0d0e0f"
     datetime = ~N[2014-01-16 20:26:51]
+    bit      = <<0::1, 1::1, 0::1, 1::1>>
 
-    TestRepo.insert!(%Post{text: text, public: true, visits: integer, uuid: uuid,
+    TestRepo.insert!(%Post{text: text, public: true, visits: integer, uuid: uuid, flags: bit,
                            counter: integer, inserted_at: datetime, intensity: float})
 
     # nil
@@ -47,6 +48,9 @@ defmodule Ecto.Integration.TypeTest do
 
     # NaiveDatetime
     assert [^datetime] = TestRepo.all(from p in Post, where: p.inserted_at == ^datetime, select: p.inserted_at)
+
+    # bit
+    assert [^bit] = TestRepo.all(from p in Post, where: p.flags == ^bit, select: p.flags)
 
     # Datetime
     datetime = DateTime.from_unix!(System.system_time(:seconds), :seconds)
